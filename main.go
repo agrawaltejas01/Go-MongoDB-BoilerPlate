@@ -4,9 +4,9 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/agrawaltejas01/Go-MongoDB-BoilerPlate/app/middleware"
 	"github.com/agrawaltejas01/Go-MongoDB-BoilerPlate/app/routes"
 	"github.com/agrawaltejas01/Go-MongoDB-BoilerPlate/db"
+	middleware "github.com/agrawaltejas01/Go-MongoDB-BoilerPlate/lib"
 	"github.com/gorilla/mux"
 )
 
