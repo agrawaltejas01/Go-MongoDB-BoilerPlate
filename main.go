@@ -3,29 +3,29 @@ package main
 import (
 	"fmt"
 	"os"
+	"shive-app/app/routes"
 	"shive-app/database"
 
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 )
 
 func main() {
 
 	// Load Env file
-	envVariableErr := godotenv.Load(".env")
-	if envVariableErr != nil {
-		panic("Error in Loading Env Variable")
-	}
+	// envVariableErr := godotenv.Load(".env")
+	// if envVariableErr != nil {
+	// 	panic("Error in Loading Env Variable")
+	// }
 
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8000"
 	}
-	router := gin.Default()
 
-	// Connect DB
-	database.ConnectDB()
+	// DB
 	defer database.DisconnectDB()
+
+	router := routes.Routes()
 
 	//Log events
 	router.Use(gin.Logger())

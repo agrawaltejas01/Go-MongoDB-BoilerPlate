@@ -14,7 +14,7 @@ var client *mongo.Client
 var db *mongo.Database
 var err error
 
-func ConnectDB() (*mongo.Database, error) {
+func connectDB() (*mongo.Database, error) {
 
 	// Connection URI
 	uri := os.Getenv("DB_URI")
@@ -38,6 +38,10 @@ func ConnectDB() (*mongo.Database, error) {
 }
 
 func GetCollection(collection string) (*mongo.Collection, error) {
+	db, err := connectDB()
+	if err != nil {
+		return nil, err
+	}
 	return db.Collection(collection), nil
 }
 
