@@ -1,3 +1,5 @@
 **.vscode/
 **.env
 shive-app
+**__debug**
+**tmp/

@@ -7,19 +7,22 @@ import (
 	"shive-app/database"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	// Load Env file
+	envVariableErr := godotenv.Load(".env")
+	if envVariableErr != nil {
+		panic("Error in Loading Env Variable")
+	}
+}
 
 func main() {
 
-	// Load Env file
-	// envVariableErr := godotenv.Load(".env")
-	// if envVariableErr != nil {
-	// 	panic("Error in Loading Env Variable")
-	// }
-
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8000"
+		panic("PORT not found to start server on")
 	}
 
 	// DB

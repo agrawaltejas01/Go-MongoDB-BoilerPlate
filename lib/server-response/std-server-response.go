@@ -13,6 +13,13 @@ func InternalServerError(context *gin.Context, errorMsg string) {
 	})
 }
 
+func BadRequestServerError(context *gin.Context, errorMsg string) {
+	context.JSON(http.StatusBadRequest, gin.H{
+		"success": false,
+		"error":   errorMsg,
+	})
+}
+
 func SuccessResponse(context *gin.Context, data map[string]interface{}, statusCode_optional int) {
 
 	if statusCode_optional == 0 {
