@@ -8,7 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CheckIfEmailOrUsernameAlreadyExists(userObject models.User) error {
+func CheckIfEmailOrUsernameIsDuplicate(userObject models.User) error {
 	emailOrUsernameUser, emailOrUsernameUserFindErr := userRepo.FindByEmailOrUserName(userObject.Email, userObject.Username)
 
 	if emailOrUsernameUserFindErr != nil && emailOrUsernameUserFindErr != mongo.ErrNoDocuments {
@@ -24,4 +24,17 @@ func CheckIfEmailOrUsernameAlreadyExists(userObject models.User) error {
 	}
 
 	return nil
+}
+
+func CheckIfEmailExists(email string) (models.User, error) {
+	userInDB, findErr := userRepo.FindByEmailOrUserName(email, "")
+	if findErr != nil {
+		msg := "Error in finding user in db"
+		if findErr == mongo.ErrNoDocuments {
+			msg = "User Not found"
+		}
+		return models.User{}, errors.New(msg)
+	}
+
+	return userInDB, nil
 }

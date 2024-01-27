@@ -42,12 +42,31 @@ func AddUser(user models.User) (primitive.ObjectID, error) {
 }
 
 func FindByEmailOrUserName(email string, userName string) (models.User, error) {
+	query := []interface{}{}
+
+	if email != "" {
+		query = append(query, bson.M{"email": email})
+	}
+	if userName != "" {
+		query = append(query, bson.M{"userName": userName})
+	}
+
 	return findOne(
 		bson.M{
-			"$or": []interface{}{
-				bson.M{"email": email},
-				bson.M{"userName": userName},
-			},
+			"$or": query,
 		},
 		bson.M{})
+}
+
+func UpdateTokens(_id primitive.ObjectID, token string, refreshToken string) error {
+	// return errors.New("test")
+
+	update := bson.M{
+		"$set": bson.M{
+			"token":         token,
+			"refresh_token": refreshToken,
+			"updated_at":    time.Now(),
+		},
+	}
+	return database.UpdateOne(userModel, bson.M{"_id": _id}, update)
 }
