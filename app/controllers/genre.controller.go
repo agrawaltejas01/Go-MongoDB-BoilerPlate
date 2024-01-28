@@ -59,15 +59,15 @@ func GetAllGenreDetails(context *gin.Context) {
 }
 
 func GetGenreDetails(context *gin.Context) {
-	userId := context.Param("genreId")
-	userIdInt, strToIntErr := strconv.Atoi(userId)
+	genreId := context.Param("genreId")
+	genreIdInt, strToIntErr := strconv.Atoi(genreId)
 
 	if strToIntErr != nil {
 		serverResponse.BadRequestServerError(context, "Invalid Genre Id passed")
 		return
 	}
 
-	genreObject, err := genreService.GetGenreDataFromGenreId(userIdInt)
+	genreObject, err := genreService.GetGenreDataFromGenreId(genreIdInt)
 
 	if err != nil {
 		serverResponse.InternalServerError(context, "Error in Getting Genre Data - "+err.Error())
@@ -75,6 +75,48 @@ func GetGenreDetails(context *gin.Context) {
 	}
 
 	var result = make(map[string]interface{})
-	result["user"] = returnGenreData(genreObject)
+	result["genre"] = returnGenreData(genreObject)
+	serverResponse.SuccessResponse(context, result, 0)
+}
+
+func UpdateGenreDetails(context *gin.Context) {
+	var genre models.Genre
+	jsonBindErr := context.BindJSON(&genre)
+
+	if jsonBindErr != nil {
+		serverResponse.BadRequestServerError(context, "Bad Data received for genre object "+jsonBindErr.Error())
+		return
+	}
+
+	err := genreService.UpdateGenre(genre)
+
+	if err != nil {
+		serverResponse.InternalServerError(context, "Error in Updating Genre Data - "+err.Error())
+		return
+	}
+
+	var result = make(map[string]interface{})
+	result["success"] = true
+	serverResponse.SuccessResponse(context, result, 0)
+}
+
+func DeleteGenre(context *gin.Context) {
+	genreId := context.Param("genreId")
+	genreIdInt, strToIntErr := strconv.Atoi(genreId)
+
+	if strToIntErr != nil {
+		serverResponse.BadRequestServerError(context, "Invalid Genre Id passed")
+		return
+	}
+
+	err := genreService.DeleteGenre(genreIdInt)
+
+	if err != nil {
+		serverResponse.InternalServerError(context, "Error in Deleting Genre Data - "+err.Error())
+		return
+	}
+
+	var result = make(map[string]interface{})
+	result["success"] = true
 	serverResponse.SuccessResponse(context, result, 0)
 }

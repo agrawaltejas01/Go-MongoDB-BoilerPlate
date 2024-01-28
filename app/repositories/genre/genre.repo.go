@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var genreModel *mongo.Collection
@@ -29,6 +30,29 @@ func AddGenre(genre models.Genre) (primitive.ObjectID, error) {
 	genre.CreatedAt = time.Now()
 	genre.UpdatedAt = time.Now()
 	return database.InsertOne(genreModel, genre)
+}
+
+func UpsertGenre(genre models.Genre) error {
+	findQuery := bson.M{
+		"_id": genre.Id,
+	}
+
+	updateQuery := bson.M{
+		"$set": bson.M{
+			"name":       genre.Name,
+			"genre_id":   genre.Genre_id,
+			"updated_at": time.Now(),
+		},
+	}
+
+	opts := options.Update().SetUpsert(true)
+	_, err := database.UpdateOne(genreModel, findQuery, updateQuery, opts)
+
+	return err
+}
+
+func DeleteGenre(genreId int) error {
+	return database.DeleteOne(genreModel, bson.M{"genre_id": genreId})
 }
 
 func FindByName(name string) (models.Genre, error) {

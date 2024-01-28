@@ -44,42 +44,30 @@ func Find(collection *mongo.Collection, query bson.M, projection bson.M) (*mongo
 	return cur, context, nil
 }
 
-func UpdateOne(collection *mongo.Collection, filter bson.M, update bson.M) error {
+func UpdateOne(collection *mongo.Collection, filter bson.M, update bson.M, opts *options.UpdateOptions) (*mongo.UpdateResult, error) {
 	context, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
-	result, err := collection.UpdateOne(context, filter, update)
-
-	if result.MatchedCount == 0 {
-		panic(errors.New("no docs matched"))
-	} else if result.ModifiedCount == 0 {
-		panic(errors.New("no docs modified"))
-	}
+	result, err := collection.UpdateOne(context, filter, update, opts)
 
 	if err != nil {
 		panic(err)
 	}
 
-	return nil
+	return result, nil
 }
 
-func UpdateMany(collection *mongo.Collection, filter bson.M, update bson.M) error {
+func UpdateMany(collection *mongo.Collection, filter bson.M, update bson.M) (*mongo.UpdateResult, error) {
 	context, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	result, err := collection.UpdateMany(context, filter, update)
 
-	if result.MatchedCount == 0 {
-		panic(errors.New("no docs matched"))
-	} else if result.ModifiedCount == 0 {
-		panic(errors.New("no docs modified"))
-	}
-
 	if err != nil {
 		panic(err)
 	}
 
-	return nil
+	return result, nil
 }
 
 func DeleteOne(collection *mongo.Collection, filter bson.M) error {
@@ -89,7 +77,7 @@ func DeleteOne(collection *mongo.Collection, filter bson.M) error {
 	result, err := collection.DeleteOne(context, filter)
 
 	if result.DeletedCount == 0 {
-		panic(errors.New("no docs deleted"))
+		return errors.New("no docs deleted")
 	}
 
 	if err != nil {

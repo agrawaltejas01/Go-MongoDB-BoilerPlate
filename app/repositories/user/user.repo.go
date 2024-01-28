@@ -57,7 +57,10 @@ func UpdateTokens(_id primitive.ObjectID, token string, refreshToken string) err
 			"updated_at":    time.Now(),
 		},
 	}
-	return database.UpdateOne(userModel, bson.M{"_id": _id}, update)
+	_, err := database.UpdateOne(userModel, bson.M{"_id": _id}, update, nil)
+
+	return err
+
 }
 
 func FindByUserId(userId string) (models.User, error) {

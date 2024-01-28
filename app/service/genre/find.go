@@ -24,17 +24,17 @@ func CheckIfGenreAlreadyExistsByName(name string) error {
 	return nil
 }
 
-func GetGenreDataFromGenreId(userId int) (models.Genre, error) {
-	userInDB, findErr := genreRepo.FindByGenreId(userId)
+func GetGenreDataFromGenreId(genreId int) (models.Genre, error) {
+	genreInDB, findErr := genreRepo.FindByGenreId(genreId)
 	if findErr != nil {
-		msg := "Error in finding user in db"
+		msg := "Error in finding genre in db"
 		if findErr == mongo.ErrNoDocuments {
 			msg = "Genre Not found"
 		}
 		return models.Genre{}, errors.New(msg)
 	}
 
-	return userInDB, nil
+	return genreInDB, nil
 }
 
 func GetAllGenres() ([]models.Genre, error) {
