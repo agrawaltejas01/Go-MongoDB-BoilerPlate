@@ -1,7 +1,6 @@
 package userRepo
 
 import (
-	"context"
 	"shive-app/database"
 	"shive-app/database/models"
 	"time"
@@ -25,20 +24,10 @@ func findOne(query bson.M, projection bson.M) (models.User, error) {
 	return user, err
 }
 
-func insertOne(collection *mongo.Collection, user models.User) (primitive.ObjectID, error) {
-	context, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-
+func AddUser(user models.User) (primitive.ObjectID, error) {
 	user.Created_at = time.Now()
 	user.Updated_at = time.Now()
-
-	result, err := collection.InsertOne(context, user)
-
-	return result.InsertedID.(primitive.ObjectID), err
-}
-
-func AddUser(user models.User) (primitive.ObjectID, error) {
-	return insertOne(userModel, user)
+	return database.InsertOne(userModel, user)
 }
 
 func FindByEmailOrUserName(email string, userName string) (models.User, error) {

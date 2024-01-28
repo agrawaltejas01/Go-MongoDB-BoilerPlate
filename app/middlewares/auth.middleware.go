@@ -7,13 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func authenticateToken(context *gin.Context) {
+func authenticateToken(context *gin.Context) bool {
 	token := context.Request.Header.Get("token")
 
 	if token == "" {
 		serverResponse.BadRequestServerError(context, "token required")
 		context.Abort()
-		return
+		return false
 	}
 
 	jwtData, err := authService.ValidateToken(token)
@@ -21,7 +21,7 @@ func authenticateToken(context *gin.Context) {
 	if err != "" {
 		serverResponse.BadRequestServerError(context, "Invalid token - "+err)
 		context.Abort()
-		return
+		return false
 	}
 	context.Set("email", jwtData.Email)
 	context.Set("name", jwtData.Name)
@@ -29,20 +29,31 @@ func authenticateToken(context *gin.Context) {
 	context.Set("userId", jwtData.User_Id)
 	context.Set("userType", jwtData.User_type)
 
+	return true
+
 }
 
 func Authenticate(context *gin.Context) {
-	authenticateToken(context)
+	success := authenticateToken(context)
+
+	if !success {
+		return
+	}
 
 	context.Next()
 }
 
 func AuthenticateAdmin(context *gin.Context) {
-	authenticateToken(context)
+	success := authenticateToken(context)
+
+	if !success {
+		return
+	}
 
 	if context.GetString("userType") != "ADMIN" {
 		serverResponse.UnauthorizedRequest(context)
 		context.Abort()
+		return
 	}
 
 	context.Next()

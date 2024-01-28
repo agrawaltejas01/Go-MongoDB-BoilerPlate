@@ -6,9 +6,19 @@ import (
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
+
+func InsertOne(collection *mongo.Collection, document interface{}) (primitive.ObjectID, error) {
+	context, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	result, err := collection.InsertOne(context, document)
+
+	return result.InsertedID.(primitive.ObjectID), err
+}
 
 func FindOne(collection *mongo.Collection, query bson.M, projection bson.M) *mongo.SingleResult {
 	context, cancel := context.WithTimeout(context.Background(), 10*time.Second)
