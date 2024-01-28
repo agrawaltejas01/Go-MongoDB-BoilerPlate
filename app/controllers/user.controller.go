@@ -91,12 +91,6 @@ func GetDetails(context *gin.Context) {
 }
 
 func GetAllUsers(context *gin.Context) {
-
-	if context.GetString("userType") != "ADMIN" {
-		serverResponse.UnauthorizedRequest(context)
-		return
-	}
-
 	users, err := userService.GetAllUsers()
 
 	if err != nil {

@@ -19,7 +19,7 @@ type User struct {
 	Refresh_token string             `json:"refresh_token,omitempty"`
 	Created_at    time.Time          `json:"created_at,omitempty"`
 	Updated_at    time.Time          `json:"updated_at,omitempty"`
-	User_id       string             `json:"user_id" validate:"required, min=4"`
+	User_id       string             `json:"user_id" validate:"required,min=4"`
 }
 
 func marshal(u *User) *User {

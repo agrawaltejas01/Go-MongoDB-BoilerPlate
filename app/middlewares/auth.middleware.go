@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Authenticate(context *gin.Context) {
+func authenticateToken(context *gin.Context) {
 	token := context.Request.Header.Get("token")
 
 	if token == "" {
@@ -23,13 +23,27 @@ func Authenticate(context *gin.Context) {
 		context.Abort()
 		return
 	}
-
 	context.Set("email", jwtData.Email)
 	context.Set("name", jwtData.Name)
 	context.Set("userName", jwtData.Username)
 	context.Set("userId", jwtData.User_Id)
 	context.Set("userType", jwtData.User_type)
 
-	context.Next()
+}
 
+func Authenticate(context *gin.Context) {
+	authenticateToken(context)
+
+	context.Next()
+}
+
+func AuthenticateAdmin(context *gin.Context) {
+	authenticateToken(context)
+
+	if context.GetString("userType") != "ADMIN" {
+		serverResponse.UnauthorizedRequest(context)
+		context.Abort()
+	}
+
+	context.Next()
 }
