@@ -20,7 +20,7 @@ func InsertOne(collection *mongo.Collection, document interface{}) (primitive.Ob
 	return result.InsertedID.(primitive.ObjectID), err
 }
 
-func FindOne(collection *mongo.Collection, query bson.M, projection bson.M) *mongo.SingleResult {
+func FindOne(collection *mongo.Collection, query interface{}, projection bson.M) *mongo.SingleResult {
 	context, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
@@ -31,7 +31,7 @@ func FindOne(collection *mongo.Collection, query bson.M, projection bson.M) *mon
 	return result
 }
 
-func Find(collection *mongo.Collection, query bson.M, projection bson.M) (*mongo.Cursor, context.Context, error) {
+func Find(collection *mongo.Collection, query interface{}, projection bson.M) (*mongo.Cursor, context.Context, error) {
 	context, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 

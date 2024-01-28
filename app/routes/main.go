@@ -7,6 +7,7 @@ func Routes() *gin.Engine {
 
 	UserRoutes(router)
 	GenreRoutes(router)
+	MovieRoutes(router)
 
 	return router
 

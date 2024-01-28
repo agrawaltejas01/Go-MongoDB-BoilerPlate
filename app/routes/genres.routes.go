@@ -8,11 +8,13 @@ import (
 )
 
 func GenreRoutes(router *gin.Engine) {
-	userRoutes := router.Group("/genre")
+	genreRoutes := router.Group("/genre")
 
-	userRoutes.POST("/", authMiddlewares.AuthenticateAdmin, controllers.CreateGenre)
-	userRoutes.GET("/:genreId", authMiddlewares.AuthenticateAdmin, controllers.GetGenreDetails)
-	userRoutes.GET("/all", authMiddlewares.AuthenticateAdmin, controllers.GetAllGenreDetails)
-	userRoutes.PUT("/", authMiddlewares.AuthenticateAdmin, controllers.UpdateGenreDetails)
-	userRoutes.DELETE("/:genreId", authMiddlewares.AuthenticateAdmin, controllers.DeleteGenre)
+	genreRoutes.Use(authMiddlewares.AuthenticateAdmin)
+
+	genreRoutes.POST("/", controllers.CreateGenre)
+	genreRoutes.GET("/:genreId", controllers.GetGenreDetails)
+	genreRoutes.GET("/all", controllers.GetAllGenreDetails)
+	genreRoutes.PUT("/", controllers.UpdateGenreDetails)
+	genreRoutes.DELETE("/:genreId", controllers.DeleteGenre)
 }
