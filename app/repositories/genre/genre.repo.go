@@ -38,3 +38,11 @@ func FindByName(name string) (models.Genre, error) {
 		},
 		bson.M{})
 }
+
+func FindByGenreId(genreId int) (models.Genre, error) {
+	return findOne(
+		bson.M{
+			"genre_id": genreId,
+		},
+		bson.M{})
+}

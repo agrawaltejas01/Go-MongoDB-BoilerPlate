@@ -13,6 +13,6 @@ func UserRoutes(router *gin.Engine) {
 	userRoutes.POST("/signup", controllers.Signup)
 	userRoutes.POST("/login", controllers.Login)
 
-	userRoutes.GET("/:userId", authMiddlewares.Authenticate, controllers.GetDetails)
+	userRoutes.GET("/:userId", authMiddlewares.Authenticate, controllers.GetUserDetails)
 	userRoutes.GET("/all", authMiddlewares.AuthenticateAdmin, controllers.GetAllUsers)
 }

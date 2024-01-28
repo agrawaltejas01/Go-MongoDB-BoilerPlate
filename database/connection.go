@@ -3,8 +3,10 @@ package database
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 
+	"go.mongodb.org/mongo-driver/event"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
@@ -20,8 +22,14 @@ func connectDB() (*mongo.Database, error) {
 	uri := os.Getenv("DB_URI")
 	fmt.Println(uri)
 
+	cmdMonitor := &event.CommandMonitor{
+		Started: func(_ context.Context, evt *event.CommandStartedEvent) {
+			log.Print(evt.Command)
+		},
+	}
+
 	// Create a new client and connect to the server
-	client, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
+	client, err = mongo.Connect(context.TODO(), options.Client().ApplyURI(uri).SetMonitor(cmdMonitor))
 	if err != nil {
 		panic(err)
 	}

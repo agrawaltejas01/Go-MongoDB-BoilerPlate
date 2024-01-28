@@ -75,7 +75,7 @@ func Signup(context *gin.Context) {
 	serverResponse.SuccessResponse(context, result, 0)
 }
 
-func GetDetails(context *gin.Context) {
+func GetUserDetails(context *gin.Context) {
 	userId := context.Param("userId")
 
 	userObject, err := userService.GetUserDataFromUserId(userId)
