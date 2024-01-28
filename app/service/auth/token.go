@@ -12,7 +12,7 @@ type JwtSignedDetails struct {
 	Email     string
 	Name      string
 	Username  string
-	Uid       string
+	User_Id   string
 	User_type string
 	jwt.StandardClaims
 }
@@ -32,7 +32,7 @@ func GenerateAllTokens(
 		Email:     email,
 		Name:      name,
 		Username:  userName,
-		Uid:       uid,
+		User_Id:   uid,
 		User_type: userType,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(12)).Unix(),
@@ -45,7 +45,7 @@ func GenerateAllTokens(
 		},
 	}
 
-	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
+	token, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
 	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
 
 	if err != nil {
