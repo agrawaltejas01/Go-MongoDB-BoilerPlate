@@ -46,3 +46,42 @@ func FindByGenreId(genreId int) (models.Genre, error) {
 		},
 		bson.M{})
 }
+
+func GetAllGenresForAdmin() ([]models.Genre, error) {
+	groupStage := bson.D{{
+		Key: "$group", Value: bson.D{
+			{Key: "_id", Value: bson.D{{Key: "_id", Value: "null"}}},
+			{Key: "total_count", Value: bson.D{{Key: "$sum", Value: 1}}},
+			{Key: "data", Value: bson.D{{Key: "$push", Value: "$$ROOT"}}},
+		},
+	}}
+
+	pipeline := mongo.Pipeline{
+		groupStage,
+	}
+
+	cursor, context, err := database.Aggregate(genreModel, pipeline)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var allGenres []bson.M
+	if err = cursor.All(context, &allGenres); err != nil {
+		return nil, err
+	}
+
+	var genreSlice []models.Genre
+
+	for _, elem := range allGenres[0]["data"].(primitive.A) {
+		if doc, ok := elem.(bson.M); ok { // Check if it's a bson.M document
+			var genre models.Genre
+			bsonBytes, _ := bson.Marshal(doc)
+			if err := bson.Unmarshal(bsonBytes, &genre); err == nil {
+				genreSlice = append(genreSlice, genre)
+			}
+		}
+	}
+
+	return genreSlice, nil
+}

@@ -36,3 +36,13 @@ func GetGenreDataFromGenreId(userId int) (models.Genre, error) {
 
 	return userInDB, nil
 }
+
+func GetAllGenres() ([]models.Genre, error) {
+	genres, err := genreRepo.GetAllGenresForAdmin()
+
+	if err != nil {
+		return nil, errors.New("error in getting genres")
+	}
+
+	return genres, nil
+}

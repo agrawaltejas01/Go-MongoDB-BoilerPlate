@@ -12,4 +12,5 @@ func GenreRoutes(router *gin.Engine) {
 
 	userRoutes.POST("/", authMiddlewares.AuthenticateAdmin, controllers.CreateGenre)
 	userRoutes.GET("/:genreId", authMiddlewares.AuthenticateAdmin, controllers.GetGenreDetails)
+	userRoutes.GET("/all", authMiddlewares.AuthenticateAdmin, controllers.GetAllGenreDetails)
 }

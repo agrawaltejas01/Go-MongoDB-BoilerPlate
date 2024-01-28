@@ -39,6 +39,25 @@ func CreateGenre(context *gin.Context) {
 	serverResponse.SuccessResponse(context, result, 0)
 }
 
+func GetAllGenreDetails(context *gin.Context) {
+	genres, err := genreService.GetAllGenres()
+
+	if err != nil {
+		serverResponse.InternalServerError(context, "Error in Getting Genre Data - "+err.Error())
+		return
+	}
+
+	var genreSlice []interface{}
+	for _, user := range genres {
+		genreSlice = append(genreSlice, returnGenreData(user))
+	}
+
+	var result = make(map[string]interface{})
+	result["data"] = genreSlice
+
+	serverResponse.SuccessResponse(context, result, 0)
+}
+
 func GetGenreDetails(context *gin.Context) {
 	userId := context.Param("genreId")
 	userIdInt, strToIntErr := strconv.Atoi(userId)
