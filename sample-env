@@ -1,0 +1,7 @@
+# DB
+DB_URI='mongodb://localhost:27017'
+
+# Server
+PORT=':9000'
+SECRET_KEY=SecretShiveKeySomethingEggs
+TZ=IST
