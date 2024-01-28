@@ -26,7 +26,7 @@ func findOne(query interface{}, projection bson.M) (models.Movie, error) {
 	return movie, err
 }
 
-func buildUsersSlice(cursor *mongo.Cursor, context context.Context) ([]models.Movie, error) {
+func buildMoviesSlice(cursor *mongo.Cursor, context context.Context) ([]models.Movie, error) {
 	var result []models.Movie
 
 	for cursor.Next(context) {
@@ -48,7 +48,7 @@ func find(query interface{}, projection bson.M) ([]models.Movie, error) {
 	if err != nil {
 		return nil, err
 	}
-	return buildUsersSlice(cursor, context)
+	return buildMoviesSlice(cursor, context)
 }
 
 func AddMovie(movie models.Movie) (primitive.ObjectID, error) {
@@ -70,6 +70,7 @@ func UpsertMovie(movie models.Movie) error {
 			"genre_id":   movie.Genre_id,
 			"movie_url":  movie.Movie_url,
 			"updated_at": time.Now(),
+			"movie_id":   movie.Movie_id,
 		},
 	}
 
