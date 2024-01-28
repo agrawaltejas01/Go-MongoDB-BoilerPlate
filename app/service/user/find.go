@@ -38,3 +38,16 @@ func CheckIfEmailExists(email string) (models.User, error) {
 
 	return userInDB, nil
 }
+
+func GetUserDataFromUserId(userId string) (models.User, error) {
+	userInDB, findErr := userRepo.FindByUserId(userId)
+	if findErr != nil {
+		msg := "Error in finding user in db"
+		if findErr == mongo.ErrNoDocuments {
+			msg = "User Not found"
+		}
+		return models.User{}, errors.New(msg)
+	}
+
+	return userInDB, nil
+}

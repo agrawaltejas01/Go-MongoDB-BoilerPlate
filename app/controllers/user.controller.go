@@ -8,6 +8,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func returnUserData(userObject models.User) map[string]interface{} {
+	var userData = make(map[string]interface{})
+	userData["email"] = userObject.Email
+	userData["name"] = userObject.Name
+	userData["username"] = userObject.Username
+	userData["token"] = userObject.Token
+	userData["refresh_token"] = userObject.Refresh_token
+	userData["user_id"] = userObject.User_id
+	userData["user_type"] = userObject.User_type
+
+	return userData
+}
+
 func Login(context *gin.Context) {
 
 	type requestBody struct {
@@ -35,22 +48,12 @@ func Login(context *gin.Context) {
 		return
 	}
 
-	var userData = make(map[string]interface{})
-	userData["email"] = userObject.Email
-	userData["name"] = userObject.Name
-	userData["username"] = userObject.Username
-	userData["token"] = userObject.Token
-	userData["refresh_token"] = userObject.Refresh_token
-	userData["user_id"] = userObject.User_id
-	userData["user_type"] = userObject.User_type
-
 	var result = make(map[string]interface{})
-	result["user"] = userData
+	result["user"] = returnUserData(userObject)
 	serverResponse.SuccessResponse(context, result, 0)
 }
 
 func Signup(context *gin.Context) {
-
 	var user models.User
 	jsonBindErr := context.BindJSON(&user)
 
@@ -69,5 +72,20 @@ func Signup(context *gin.Context) {
 	var result = make(map[string]interface{})
 	result["id"] = id
 
+	serverResponse.SuccessResponse(context, result, 0)
+}
+
+func GetDetails(context *gin.Context) {
+	userId := context.Param("userId")
+
+	userObject, err := userService.GetUserDataFromUserId(userId)
+
+	if err != nil {
+		serverResponse.InternalServerError(context, "Error in Getting User Data - "+err.Error())
+		return
+	}
+
+	var result = make(map[string]interface{})
+	result["user"] = returnUserData(userObject)
 	serverResponse.SuccessResponse(context, result, 0)
 }

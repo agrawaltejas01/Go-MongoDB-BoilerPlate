@@ -70,3 +70,11 @@ func UpdateTokens(_id primitive.ObjectID, token string, refreshToken string) err
 	}
 	return database.UpdateOne(userModel, bson.M{"_id": _id}, update)
 }
+
+func FindByUserId(userId string) (models.User, error) {
+	return findOne(
+		bson.M{
+			"user_id": userId,
+		},
+		bson.M{})
+}
