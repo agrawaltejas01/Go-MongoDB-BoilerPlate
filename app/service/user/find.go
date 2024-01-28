@@ -51,3 +51,13 @@ func GetUserDataFromUserId(userId string) (models.User, error) {
 
 	return userInDB, nil
 }
+
+func GetAllUsers() ([]models.User, error) {
+	users, err := userRepo.GetAllUsersForAdmin()
+
+	if err != nil {
+		return nil, errors.New("error in getting users")
+	}
+
+	return users, nil
+}

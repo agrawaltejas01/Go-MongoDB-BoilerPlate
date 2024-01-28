@@ -15,4 +15,5 @@ func UserRoutes(router *gin.Engine) {
 
 	userRoutes.Use(authMiddlewares.Authenticate)
 	userRoutes.GET("/:userId", controllers.GetDetails)
+	userRoutes.GET("/all", controllers.GetAllUsers)
 }

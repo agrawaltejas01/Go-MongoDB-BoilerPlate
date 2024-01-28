@@ -89,3 +89,28 @@ func GetDetails(context *gin.Context) {
 	result["user"] = returnUserData(userObject)
 	serverResponse.SuccessResponse(context, result, 0)
 }
+
+func GetAllUsers(context *gin.Context) {
+
+	if context.GetString("userType") != "ADMIN" {
+		serverResponse.UnauthorizedRequest(context)
+		return
+	}
+
+	users, err := userService.GetAllUsers()
+
+	if err != nil {
+		serverResponse.InternalServerError(context, "Error in Getting User Data - "+err.Error())
+		return
+	}
+
+	var userSlice []interface{}
+	for _, user := range users {
+		userSlice = append(userSlice, returnUserData(user))
+	}
+
+	var result = make(map[string]interface{})
+	result["data"] = userSlice
+
+	serverResponse.SuccessResponse(context, result, 0)
+}

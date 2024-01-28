@@ -78,3 +78,42 @@ func FindByUserId(userId string) (models.User, error) {
 		},
 		bson.M{})
 }
+
+func GetAllUsersForAdmin() ([]models.User, error) {
+	groupStage := bson.D{{
+		Key: "$group", Value: bson.D{
+			{Key: "_id", Value: bson.D{{Key: "_id", Value: "null"}}},
+			{Key: "total_count", Value: bson.D{{Key: "$sum", Value: 1}}},
+			{Key: "data", Value: bson.D{{Key: "$push", Value: "$$ROOT"}}},
+		},
+	}}
+
+	pipeline := mongo.Pipeline{
+		groupStage,
+	}
+
+	cursor, context, err := database.Aggregate(userModel, pipeline)
+
+	if err != nil {
+		return nil, err
+	}
+
+	var allUsers []bson.M
+	if err = cursor.All(context, &allUsers); err != nil {
+		return nil, err
+	}
+
+	var userSlice []models.User
+
+	for _, elem := range allUsers[0]["data"].(primitive.A) {
+		if doc, ok := elem.(bson.M); ok { // Check if it's a bson.M document
+			var user models.User
+			bsonBytes, _ := bson.Marshal(doc)
+			if err := bson.Unmarshal(bsonBytes, &user); err == nil {
+				userSlice = append(userSlice, user)
+			}
+		}
+	}
+
+	return userSlice, nil
+}

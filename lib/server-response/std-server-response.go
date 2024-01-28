@@ -33,3 +33,10 @@ func SuccessResponse(context *gin.Context, data map[string]interface{}, statusCo
 
 	context.JSON(statusCode_optional, data)
 }
+
+func UnauthorizedRequest(context *gin.Context) {
+	context.JSON(http.StatusUnauthorized, gin.H{
+		"success": false,
+		"error":   "Unauthorized to execute request",
+	})
+}

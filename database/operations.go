@@ -105,3 +105,16 @@ func DeleteMany(collection *mongo.Collection, filter bson.M) error {
 
 	return nil
 }
+
+func Aggregate(collection *mongo.Collection, Pipeline mongo.Pipeline) (*mongo.Cursor, context.Context, error) {
+	context, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+
+	cursor, err := collection.Aggregate(context, Pipeline)
+
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return cursor, context, nil
+}
